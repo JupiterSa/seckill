@@ -9,60 +9,68 @@ import org.seckill.enums.SeckillStateEnum;
  */
 public class SeckillExecution {
 
-    //id
     private long seckillId;
-
-    //秒杀执行结果
+    /* 执行秒杀结果的状态   */
     private int state;
-
-    //状态标识
+    /* 状态的明文标示   */
     private String stateInfo;
-
-    //秒杀成功当选
+    /*  当秒杀成功时，需要传递秒杀结果的对象回去  */
     private SuccessKilled successKilled;
 
-    public void setSeckillId(long seckillId) {
+    /*  秒杀成功返回的实体  */
+    public SeckillExecution(long seckillId, SeckillStateEnum statEnum, SuccessKilled successKilled) {
         this.seckillId = seckillId;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public void setStateInfo(String stateInfo) {
-        this.stateInfo = stateInfo;
-    }
-
-    public void setSuccessKilled(SuccessKilled successKilled) {
+        this.state = statEnum.getState();
+        this.stateInfo = statEnum.getStateInfo();
         this.successKilled = successKilled;
+    }
+
+    /*  秒杀失败返回的实体  */
+    public SeckillExecution(long seckillId, SeckillStateEnum statEnum) {
+        this.seckillId = seckillId;
+        this.state = statEnum.getState();
+        this.stateInfo = statEnum.getStateInfo();
     }
 
     public long getSeckillId() {
         return seckillId;
     }
 
+    public void setSeckillId(long seckillId) {
+        this.seckillId = seckillId;
+    }
+
     public int getState() {
         return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public String getStateInfo() {
         return stateInfo;
     }
 
+    public void setStateInfo(String stateInfo) {
+        this.stateInfo = stateInfo;
+    }
+
     public SuccessKilled getSuccessKilled() {
         return successKilled;
     }
 
-    public SeckillExecution(long seckillId, SeckillStateEnum stateEnum, String successKilled) {
-        this.seckillId = seckillId;
-        this.state = stateEnum.getState();
-        this.stateInfo = stateEnum.getStateInfo();
+    public void setSuccessKilled(SuccessKilled successKilled) {
         this.successKilled = successKilled;
     }
 
-    public SeckillExecution(long seckillId, SeckillStateEnum stateEnum) {
-        this.seckillId = seckillId;
-        this.state = stateEnum.getState();
-        this.stateInfo = stateEnum.getStateInfo();
+    @Override
+    public String toString() {
+        return "SeckillExecution{" +
+                "秒杀的商品ID=" + seckillId +
+                ", 秒杀状态=" + state +
+                ", 秒杀状态信息='" + stateInfo + '\'' +
+                ", 秒杀的商品=" + successKilled +
+                '}';
     }
 }

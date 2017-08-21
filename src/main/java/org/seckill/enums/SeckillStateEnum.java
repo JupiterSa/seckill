@@ -1,5 +1,4 @@
 package org.seckill.enums;
-
 /**
  * 使用枚举表示我们的常量数据字典
  * Created by ADMINIBM on 2017/8/20.
@@ -37,7 +36,6 @@ public enum SeckillStateEnum {
         }
         return null;
     }
-
 }
 
 

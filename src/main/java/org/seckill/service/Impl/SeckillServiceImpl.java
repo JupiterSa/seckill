@@ -76,6 +76,12 @@ public class SeckillServiceImpl implements SeckillService {
         return new Exposer(true,md5,seckillId);
     }
 
+    /**
+     * 使用注解控制事务方法优点
+     * 1.开发团队达成一致约定，明确标注事务方法的编程风格
+     * 2.保证事务方法的执行时间尽可能短，不要穿插其他网络操作RPC(缓存redis等)/HTTP请求或者剥离到事务方法外部
+     * 3.不是所有的方法都需要事务，如只有一条修改操作(添加修改删除)，只读操作不需要事务控制======= 可以看看mysql 行级锁内容加深
+     */
     @Override
     @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillException, SeckillCloseException {
@@ -101,7 +107,7 @@ public class SeckillServiceImpl implements SeckillService {
                 }else {
                     //秒杀成功
                     SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
-                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,"秒杀成功");
+                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successKilled);
                 }
             }
         }catch (SeckillCloseException e1){
