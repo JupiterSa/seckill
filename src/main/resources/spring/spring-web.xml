@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+        <!-- 配置springMVC -->
+
+    <!-- 1开启springMVC的注解模式 -->
+    <!-- 简化配置
+           （1）自动注册DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter
+           （2）提供一系列：数据绑定，数字和日期的format @NumberFormat, @DataTimeFormat, xml,json默认读写支持
+           -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <!--  -->
+</beans>
