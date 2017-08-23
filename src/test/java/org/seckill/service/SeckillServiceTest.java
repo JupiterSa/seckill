@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.seckill.dto.Exposer;
 import org.seckill.dto.SeckillExecution;
 import org.seckill.entity.Seckill;
+import org.seckill.exception.RepeatKillException;
+import org.seckill.exception.SeckillCloseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.slf4j.Logger;
@@ -34,7 +36,6 @@ public class SeckillServiceTest {
          * Seckill{seckillId=1002, name='Xiaomi4', number=300, createTime=Sat Aug 19 05:24:02 CST 2017, startTime=Sun May 22 00:00:00 CST 2016, endTime=Mon May 23 00:00:00 CST 2016},
          * Seckill{seckillId=1003, name='Hongnote', number=400, createTime=Sat Aug 19 05:24:02 CST 2017, startTime=Sun May 22 00:00:00 CST 2016, endTime=Mon May 23 00:00:00 CST 2016}
          * ]
-
          */
         List<Seckill> seckills = seckillService.getSeckillList();
         logger.info("list={}",seckills);
@@ -51,7 +52,7 @@ public class SeckillServiceTest {
         logger.info("seckill={}",seckill);
     }
 
-//    分开测试方法，   下面把他们整合起来一起测试service
+    //分开测试方法，   下面把他们整合起来一起测试service
     @Test
     public void testExportSeckillUrl() throws Exception {
         /* Exposer=Exposer{秒杀状态=true, md5加密值='d206ae033b61cfeb3c3d2125f7f997ea', 秒杀ID=1003, 当前时间=0, 开始时间=0, 结束=0}*/
@@ -65,10 +66,38 @@ public class SeckillServiceTest {
         long id= 1003;
         long userPhone = 15478965778L;
         String md5 = "d206ae033b61cfeb3c3d2125f7f997ea";
-        SeckillExecution seckillExecution = seckillService.executeSeckill(id,userPhone,md5);
-        logger.info("resutl={}",seckillExecution);
+        try{
+            SeckillExecution seckillExecution = seckillService.executeSeckill(id,userPhone,md5);
+            logger.info("resutl={}",seckillExecution);
+        }catch (RepeatKillException e){
+            logger.error(e.getMessage());  //当出现这个一场异常时默认通过
+        }catch (SeckillCloseException e){
+            logger.error(e.getMessage());   //当出现这个一场异常时默认通过
+        }
     }
-//    public void testSeckillLogic() throws Exception {
-//    }
 
+    //将上面md5获取和秒杀减结合到一起去
+    //集成测试代码完整逻辑，注意可重复执行
+    @Test
+    public void testSeckillLogic(){
+        long id = 1001;
+        Exposer exposer = seckillService.exportSeckillUrl(id);
+
+        if (exposer.isExposed()){
+            //秒杀开启
+            long userPhone = 15478965778L;
+            String md5 = exposer.getMd5();
+            try{
+                SeckillExecution seckillExecution = seckillService.executeSeckill(id,userPhone,md5);
+                logger.info("resutl={}",seckillExecution);
+            }catch (RepeatKillException e){
+                logger.error(e.getMessage());  //当出现这个一场异常时默认通过
+            }catch (SeckillCloseException e){
+                logger.error(e.getMessage());   //当出现这个一场异常时默认通过
+            }
+        }else {
+            //秒杀未开启
+            logger.warn("exposer={}",exposer);
+        }
+    }
 }
